@@ -11,7 +11,12 @@ This is a software test case management tool which is used for tracking test cas
 
 ## How to run
 1 - Install python 3
+
 2 - Create Python virtual environment by running  'python3 -m venv env'
+
 3 - Activete virtual environment by running 'source env/bin/activate'
+
 4 - Install required python packages by running 'python3 -m pip install -r requirements.txt'
+
 5 - Start Web application by runnning 'python3 app.py'
+
