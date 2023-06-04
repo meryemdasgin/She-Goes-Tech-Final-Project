@@ -1,0 +1,224 @@
+{% extends 'parts/base.html' %} <br />
+{% block title %} Home {% endblock %}<br />
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header">Statistics</div>
+                <div class="card-body">
+                     <div class="row">
+                         <div class="col-md-4">
+                             <div class="card shadow">
+                                  <div class="card-body">
+                                      <h6>Total</h6>
+                                      <p class="text-center">{{total_todo}}</p>
+                                  </div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="card shadow">
+                                  <div class="card-body">
+                                      <h6>Completed</h6>
+                                      <p class="text-center">{{completed_todo}}</p>
+                                  </div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="card shadow">
+                                  <div class="card-body">
+                                      <h6>Uncompleted</h6>
+                                      <p class="text-center">{{uncompleted_todo}}</p>
+                                  </div>
+                             </div>
+                         </div>
+                     </div>
+                    <center>
+                        <div id="chart"> </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header">Test Case Generation</div>
+                <div class="card-body">
+                    <form action="/add" method="POST">
+                        <label for=""><b>Title:</b></label>
+                        <input class="form-control" type="text" name="title" placeholder="Test Title">
+                        <br>
+                        <label for=""><b>Type:</b></label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="radio1" name="type" value="st" checked>Smoke Test
+                          <label class="form-check-label" for="radio1"></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" id="radio2" name="type" value="rt">Regression Test
+                          <label class="form-check-label" for="radio2"></label>
+                        </div>
+                        <br>
+                        <label for=""><b>Severity:</b></label>
+                        <select class="form-control" name="severity" id="sel1">
+                        <option value="h">High</option>
+                        <option value="m">Medium</option>
+                        <option value="l">Low</option>
+                        </select>
+                        <br>
+                        <label for=""><b>Assignee:</b></label>
+                        <input class="form-control" type="text" name="assignee" placeholder="Test Title">
+                        <br>
+                        <label for=""><b>Description:</b></label>
+                        <textarea class="form-control" rows="5" id="comment" name="description"></textarea>
+                        <br>
+                        <br>
+
+                        <input class="btn btn-dark mt-2 btn-sm" type="submit" value="Create">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if total_todo == 0 %}
+
+    <marquee class="mt-5 display-4" behavior="" direction="">No ToDo in Database... Create a new ToDo in ToDo form</marquee>
+
+    {% endif %} <br />
+
+
+
+    {% for todo in todo_list %}
+    <div class="border-start border-5 border-light shadow mt-4">
+        {% if todo.type == "st": %}
+            <div class="card-body" style="background: #d0cfd1">
+            <h3>Test ID: {{ todo.id }} - {{ todo.title }}</h3>
+            <table>
+                <tr>
+                    <td><b>Type: </b></td>
+                      {% if todo.type == "st": %}
+                      <td><span>Smoke Test</span></td>
+                      {% elif todo.type == "rt": %}
+                      <td><span>Regression Test</span></td>
+                     {% else %}
+                      <td><span>{{ todo.severity }}</span></td>
+                     {% endif %}
+                </tr>
+                 <tr>
+                    <td><b>Severity: </b></td>
+                     {% if todo.severity == "h": %}
+                      <td><span style="color: #ff1500"><b>HIGH</b></span></td>
+                      {% elif todo.severity == "m": %}
+                      <td><span style="color: #d48a4a"><b>MEDIUM</b></span></td>
+                      {% elif todo.severity == "l": %}
+                      <td><span style="color: #4e74c7"><b>LOW</b></span></td>
+                     {% else %}
+                      <td><span>{{ todo.severity }}</span></td>
+                     {% endif %}
+
+                </tr>
+                 <tr>
+                    <td><b>Assignee: </b></td><td>{{ todo.assignee }}</td>
+                </tr>
+                <tr>
+                    <td><b>Description: </b></td><td></td>
+                </tr>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        <p>{{ todo.description }}</p>
+                    </td>
+                </tr>
+            </table>
+
+            <p></p>
+            {% if todo.complete %}
+            <span class="badge bg-success">Passed</span>
+            {% else %}
+            <span class="badge bg-secondary">Not Tested</span>
+            {% endif %}
+            <a class="btn btn-info btn-sm" href="/update/{{ todo.id }}">Pass</a>
+            <a class="btn btn-danger btn-sm" href="/delete/{{ todo.id }}">Delete</a>
+        </div>
+        {% else %}
+            <div class="card-body"">
+            <h3>Test ID: {{ todo.id }} - {{ todo.title }}</h3>
+            <table>
+                <tr>
+                    <td><b>Type: </b></td>
+                      {% if todo.type == "st": %}
+                      <td><span>Smoke Test</span></td>
+                      {% elif todo.type == "rt": %}
+                      <td><span>Regression Test</span></td>
+                     {% else %}
+                      <td><span>{{ todo.severity }}</span></td>
+                     {% endif %}
+                </tr>
+                 <tr>
+                    <td><b>Severity: </b></td>
+                     {% if todo.severity == "h": %}
+                      <td><span style="color: #ff1500"><b>HIGH</b></span></td>
+                      {% elif todo.severity == "m": %}
+                      <td><span style="color: #d48a4a"><b>MEDIUM</b></span></td>
+                      {% elif todo.severity == "l": %}
+                      <td><span style="color: #4e74c7"><b>LOW</b></span></td>
+                     {% else %}
+                      <td><span>{{ todo.severity }}</span></td>
+                     {% endif %}
+
+                </tr>
+                 <tr>
+                    <td><b>Assignee: </b></td><td>{{ todo.assignee }}</td>
+                </tr>
+                <tr>
+                    <td><b>Description: </b></td><td></td>
+                </tr>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        <p>{{ todo.description }}</p>
+                    </td>
+                </tr>
+            </table>
+
+            <p></p>
+            {% if todo.complete %}
+            <span class="badge bg-success">Passed</span>
+            {% else %}
+            <span class="badge bg-secondary">Not Tested</span>
+            {% endif %}
+            <a class="btn btn-info btn-sm" href="/update/{{ todo.id }}">Pass</a>
+            <a class="btn btn-danger btn-sm" href="/delete/{{ todo.id }}">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+<script>
+         var options = {
+          series: [{{completed_todo}},{{uncompleted_todo}}],
+          chart: {
+          width: 380,
+          type: 'pie',
+        },
+        labels: ['Completed', 'Uncompleted'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+</script>
+</div>
+{% endblock %}
